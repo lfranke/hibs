@@ -59,7 +59,7 @@ improves PSNR by up to 0.8 dB while reducing optimization time by up to 40%.
 Windows, Visual Studio 2022, CUDA 12.8:
 
 ```bash
-git clone --recursive <repo> hibs && cd hibs
+git clone --recursive https://github.com/lfranke/hibs.git hibs && cd hibs
 conda create -n hibs python=3.11 -y
 conda activate hibs
 pip install torch==2.11.0 torchvision --index-url https://download.pytorch.org/whl/cu128
@@ -72,7 +72,7 @@ scripts\build_extensions.bat %CONDA_PREFIX%\python.exe
 Linux, GCC 10-14, CUDA 12.8:
 
 ```bash
-git clone --recursive <repo> hibs && cd hibs
+git clone --recursive https://github.com/lfranke/hibs.git hibs && cd hibs
 conda create -n hibs python=3.11 -y
 conda activate hibs
 pip install torch==2.11.0 torchvision --index-url https://download.pytorch.org/whl/cu128
