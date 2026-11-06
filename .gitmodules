@@ -1,0 +1,3 @@
+[submodule "submodules/i3dgs"]
+	path = submodules/i3dgs
+	url = https://github.com/graphdeco-inria/i3dgs.git

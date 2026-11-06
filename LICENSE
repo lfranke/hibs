@@ -1,0 +1,36 @@
+# License
+
+Copyright (c) 2026 Linus Franke. All rights reserved.
+
+In this license, the "Software" means the source code, documentation, configuration files, scripts, and any pretrained models or data released in this repository, except the third-party components listed below.
+
+## Research and Evaluation Use
+
+Permission is hereby granted, free of charge, to research users (both academic and industrial) to use, copy, modify, merge, and distribute the Software **non-commercially, i.e. for research and/or evaluation purposes only**, subject to the following conditions:
+
+1. The above copyright notice and this license shall be included in all copies or substantial portions of the Software.
+2. Copies and derivative works of the Software may only be distributed under the terms of this license.
+3. Any publication or other academic work that uses the Software, or parts of it, must cite the accompanying paper:
+
+   > Linus Franke, "Hierarchical Incremental Beta Splatting for Online Reconstruction," IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2027.
+
+Results produced with the Software (e.g. reconstructions, renderings, or trained models) may likewise be used for research and/or evaluation purposes only.
+
+## Commercial Use
+
+Any commercial use of the Software or of results produced with it, including but not limited to use in a commercial product or service, use to provide services to third parties, or any use beyond research and evaluation, **requires prior written permission** from the copyright holders.
+
+For commercial licensing inquiries, please contact the author.
+
+## Disclaimer of Warranty and Liability
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## Third-Party Components
+
+This license applies to the entire Software except the `submodules/i3dgs` Git submodule and the `submodules/faster-beta-splatting/` subfolder. These remain under their own licenses (see the LICENSE file in each):
+
+- **`i3dgs`** (Immediate3DGS): © Inria, Immediate3DGS License (non-commercial research and evaluation use only).
+- **`faster-beta-splatting`**: derived from Faster-GS, Apache License 2.0.
+
+Any commercial permission granted by us covers only the Software, not these components.

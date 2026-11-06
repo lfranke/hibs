@@ -1,0 +1,129 @@
+diff --git a/poses/ba_problem.py b/poses/ba_problem.py
+index f522619..0bbf231 100644
+--- a/poses/ba_problem.py
++++ b/poses/ba_problem.py
+@@ -400,7 +400,8 @@ class BAProblem:
+         self._ensure_obs_capacity(n_match)
+ 
+         # Load GPU counter
+-        self._obs_size_gpu[0] = self.obs_size
++        if not getattr(self, "_defer_obs_readback", False):
++            self._obs_size_gpu[0] = self.obs_size
+ 
+         id_in_ba_other = keyframes[kf_id_other].desc_kpts.id_in_ba_problem.cuda()
+ 
+@@ -435,7 +436,10 @@ class BAProblem:
+             )
+ 
+         # Read back counter with a single sync
+-        self.obs_size = int(self._obs_size_gpu[0])
++        if getattr(self, "_defer_obs_readback", False):
++            self.obs_size += n_match
++        else:
++            self.obs_size = int(self._obs_size_gpu[0])
+ 
+     def _add_observations_from_other_kf(
+         self,
+@@ -459,7 +463,8 @@ class BAProblem:
+         other_desc_kpts.id_in_ba_problem = other_desc_kpts.id_in_ba_problem.cuda()
+ 
+         self._ensure_obs_capacity(n_match)  # conservative reserve
+-        self._obs_size_gpu[0] = self.obs_size
++        if not getattr(self, "_defer_obs_readback", False):
++            self._obs_size_gpu[0] = self.obs_size
+ 
+         kf_other = keyframes[kf_id_other]
+         Rt_other_3x4 = kf_other.get_Rt().detach()[:3].contiguous()
+@@ -497,7 +502,10 @@ class BAProblem:
+                 ),
+             )
+ 
+-        self.obs_size = int(self._obs_size_gpu[0])
++        if getattr(self, "_defer_obs_readback", False):
++            self.obs_size += n_match
++        else:
++            self.obs_size = int(self._obs_size_gpu[0])
+ 
+     def append(self, keyframes: List[Keyframe], keyframe: Keyframe):
+         desc_kpts = keyframe.desc_kpts
+@@ -509,6 +517,7 @@ class BAProblem:
+         f_curr = keyframe.f if keyframe.f.numel() == 1 else keyframe.f[:1].contiguous()
+ 
+         # Update existing landmarks with observations from current keyframe
++        self._defer_obs_readback = True
+         n_matches = [len(m.kpts) for m in desc_kpts.matches.values() if not m.is_loop]
+         max_matches = max(n_matches) if n_matches else 0
+         for kf_id_other, match in desc_kpts.matches.items():
+@@ -527,6 +536,9 @@ class BAProblem:
+                 len(match.kpts) >= self.min_matches_edge or len(match.kpts) == max_matches):
+                 self.pose_graph.add_match(keyframe.index, kf_id_other, 1.0 / len(match.kpts))
+ 
++        self.obs_size = int(self._obs_size_gpu[0])
++        self._defer_obs_readback = False
++
+         # Create new landmarks from remaining valid points
+         new_landmark_mask = valid_mask & ~existing_mask
+         valid_ids = new_landmark_mask.nonzero(as_tuple=False).squeeze(-1)
+@@ -559,10 +571,14 @@ class BAProblem:
+             self.obs_size += n_new
+ 
+             # Add observations from other keyframes to newly created landmarks
++            self._obs_size_gpu[0] = self.obs_size
++            self._defer_obs_readback = True
+             for kf_id_other, match in desc_kpts.matches.items():
+                 self._add_observations_from_other_kf(
+                     match, new_landmark_mask, keyframes, kf_id_other, desc_kpts
+                 )
++            self.obs_size = int(self._obs_size_gpu[0])
++            self._defer_obs_readback = False
+         keyframe.desc_kpts.ba_problem = self
+ 
+     def get_landmarks(self):
+diff --git a/scene/scene_model_loop_closure.py b/scene/scene_model_loop_closure.py
+index 3ab3e7a..aa1fdb2 100644
+--- a/scene/scene_model_loop_closure.py
++++ b/scene/scene_model_loop_closure.py
+@@ -187,7 +187,7 @@ class LoopClosureMixin:
+         candidate_best_rot = best_rot[top_candidates]
+ 
+         # Use feature matching to select best from VPR candidates.
+-        candidate_feats = [self.keyframes[idx.item()].desc_kpts.feats_flat() for idx in top_candidates]
++        candidate_feats = [self.keyframes[idx].desc_kpts.feats_flat() for idx in top_candidates.tolist()]
+         query_feats = desc_kpts.full_feats_flat()
+         if query_feats.shape[0] == 1:
+             candidate_best_rot = torch.zeros_like(candidate_best_rot)
+@@ -213,12 +213,13 @@ class LoopClosureMixin:
+ 
+         # Run more robust lighter glue matcher
+         selected_indices = []
+-        for i, index in enumerate(all_selected_indices):
+-            index = index.item()
++        _sel = all_selected_indices.tolist()
++        _rot = all_selected_rotations.tolist()
++        for i, index in enumerate(_sel):
+             matches = self.matcher(
+                 desc_kpts,
+                 self.keyframes[index].desc_kpts,
+-                rotation_idx=all_selected_rotations[i].item(),
++                rotation_idx=_rot[i],
+                 remove_outliers=True,
+                 update_kpts_flag="inliers",
+                 kID=len(self.keyframes),
+@@ -240,13 +241,14 @@ class LoopClosureMixin:
+             _, best_by_matches = torch.topk(n_matches, min(n * 2, len(n_matches)))
+             all_selected_indices = top_candidates[best_by_matches]
+             all_selected_rotations = candidate_best_rot[best_by_matches]
+-            for i, index in enumerate(all_selected_indices):
+-                index = index.item()
++            _sel = all_selected_indices.tolist()
++            _rot = all_selected_rotations.tolist()
++            for i, index in enumerate(_sel):
+                 if index not in selected_indices:
+                     matches = self.matcher(
+                         desc_kpts,
+                         self.keyframes[index].desc_kpts,
+-                        rotation_idx=all_selected_rotations[i].item(),
++                        rotation_idx=_rot[i],
+                         remove_outliers=True,
+                         update_kpts_flag="inliers",
+                         kID=len(self.keyframes),

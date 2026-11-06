@@ -1,0 +1,29 @@
+{
+  "roots": {
+    "mipnerf360": "./data/mipnerf360",
+    "i3dgs": "./data/i3dgs"
+  },
+  "scenes": {
+    "MipNeRF360/garden": {"root": "mipnerf360", "path": "garden", "images": "images_4", "test_hold": 8},
+    "MipNeRF360/bonsai": {"root": "mipnerf360", "path": "bonsai", "images": "images_2", "test_hold": 8},
+    "MipNeRF360/counter": {"root": "mipnerf360", "path": "counter", "images": "images_2", "test_hold": 8},
+    "MipNeRF360/bicycle": {"root": "mipnerf360", "path": "bicycle", "images": "images_4", "test_hold": 8},
+    "MipNeRF360/kitchen": {"root": "mipnerf360", "path": "kitchen", "images": "images_2", "test_hold": 8},
+    "MipNeRF360/room": {"root": "mipnerf360", "path": "room", "images": "images_2", "test_hold": 8},
+    "MipNeRF360/stump": {"root": "mipnerf360", "path": "stump", "images": "images_4", "test_hold": 8},
+    "MipNeRF360/flowers": {"root": "mipnerf360", "path": "flowers", "images": "images_4", "test_hold": 8},
+    "MipNeRF360/treehill": {"root": "mipnerf360", "path": "treehill", "images": "images_4", "test_hold": 8},
+    "TanksAndTemples/train": {"root": "i3dgs", "path": "tandt/train", "test_hold": 8},
+    "TanksAndTemples/truck": {"root": "i3dgs", "path": "tandt/truck", "test_hold": 8},
+    "DeepBlending/drjohnson": {"root": "i3dgs", "path": "db/drjohnson", "test_hold": 8},
+    "DeepBlending/playroom": {"root": "i3dgs", "path": "db/playroom", "test_hold": 8},
+    "TUM/fr1_desk": {"root": "i3dgs", "path": "TUM/rgbd_dataset_freiburg1_desk", "test_hold": 30},
+    "TUM/fr2_xyz": {"root": "i3dgs", "path": "TUM/rgbd_dataset_freiburg2_xyz", "test_hold": 30},
+    "TUM/fr3_office": {"root": "i3dgs", "path": "TUM/rgbd_dataset_freiburg3_long_office_household", "test_hold": 30},
+    "StaticHikes/forest1": {"root": "i3dgs", "path": "StaticHikes/forest1", "test_hold": 10},
+    "StaticHikes/forest2": {"root": "i3dgs", "path": "StaticHikes/forest2", "test_hold": 10},
+    "StaticHikes/university2": {"root": "i3dgs", "path": "StaticHikes/university2", "test_hold": 10},
+    "SmallCity": {"root": "i3dgs", "path": "SmallCityFront", "images": "images/front", "test_hold": 30, "mode": "large_scene"},
+    "CityWalk": {"root": "i3dgs", "path": "CityWalk", "images": "images/cam_0", "test_hold": 30, "mode": "large_scene"}
+  }
+}

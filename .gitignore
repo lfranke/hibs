@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+models/
+results/
+data/
+Gaussian_Viewer.ini
+tmp/

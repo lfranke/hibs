@@ -1,0 +1,13 @@
+meshio
+tqdm
+opencv-python
+lpips
+addict
+kornia
+joblib
+timm
+hatchling
+
+
+depth-anything-3 @ git+https://github.com/ByteDance-Seed/Depth-Anything-3.git@40674546e40144452ec93035ac77d762f4b5d16f
+graphdecoviewer @ git+https://github.com/graphdeco-inria/graphdecoviewer@i3dgs-fixes
